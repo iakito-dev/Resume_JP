@@ -1,0 +1,15 @@
+import { defineConfig } from 'astro/config';
+import tailwind from '@astrojs/tailwind';
+import mdx from '@astrojs/mdx';
+
+export default defineConfig({
+  integrations: [
+    tailwind({
+      applyBaseStyles: false,
+    }),
+    mdx(),
+  ],
+  output: 'static',
+  site: 'https://your-site.vercel.app',
+});
+

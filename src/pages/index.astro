@@ -1,0 +1,82 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import Section from '../components/Section.astro';
+
+// MDXコンテンツをインポート
+import SummaryContent from '../content/resume/summary.mdx';
+import ProjectsContent from '../content/resume/projects.mdx';
+import ExperienceContent from '../content/resume/experience.mdx';
+import EducationContent from '../content/resume/education.mdx';
+import CertificationsContent from '../content/resume/certifications.mdx';
+import SkillsContent from '../content/resume/skills.mdx';
+import StrengthsContent from '../content/resume/strengths.mdx';
+import LanguagesContent from '../content/resume/links.mdx';
+
+// プロフィール情報
+const profile = {
+  name: '伊藤 彬人 | AKITO ITO',
+  title: 'Software Engineer / ex-Cloud Support Engineer (Database Profile)',
+  contact: {
+    email: 'sekai.110.0604@gmail.com',
+    location: '東京都',
+    tel: '080-6635-0663',
+  },
+  socialLinks: {
+    github: 'https://github.com/yourusername',
+    linkedin: 'https://linkedin.com/in/yourusername',
+    email: 'sekai.110.0604@gmail.com',
+    portfolio: '#',
+    zenn: 'https://zenn.dev/yourusername',
+  },
+};
+
+---
+
+<BaseLayout
+  title={`${profile.name} - ${profile.title}`}
+  description="Software Engineer / ex-Cloud Support Engineer (Database Profile) - Professional resume and portfolio"
+>
+  <Header
+    name={profile.name}
+    title={profile.title}
+    contact={profile.contact}
+    socialLinks={profile.socialLinks}
+  />
+
+  <Section title="プロフィール" id="profile">
+    <SummaryContent />
+  </Section>
+
+  <Section title="個人プロジェクト" id="projects">
+    <ProjectsContent />
+  </Section>
+
+  <Section title="職務経歴" id="experience">
+    <ExperienceContent />
+  </Section>
+
+  <Section title="学歴" id="education">
+    <EducationContent />
+  </Section>
+
+  <Section title="資格" id="certifications">
+    <CertificationsContent />
+  </Section>
+
+  <Section title="スキルサマリー" id="skills">
+    <SkillsContent />
+  </Section>
+
+  <Section title="強み・特性" id="strengths">
+    <StrengthsContent />
+  </Section>
+
+  <Section title="言語スキル" id="languages">
+    <LanguagesContent />
+  </Section>
+
+  <Footer />
+</BaseLayout>
+

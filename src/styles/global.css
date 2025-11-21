@@ -1,0 +1,135 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-bg: #ffffff;
+    --color-text: #1d1d1f;
+    --color-border: #d2d2d7;
+  }
+
+  .dark {
+    --color-bg: #000000;
+    --color-text: #f5f5f7;
+    --color-border: #424245;
+  }
+
+  html {
+    @apply antialiased;
+  }
+
+  body {
+    @apply bg-bg-light dark:bg-bg-dark text-text-light dark:text-text-dark;
+    @apply transition-colors duration-200;
+    font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', '游ゴシック体', 'Yu Gothic', 'YuGothic', 'Meiryo', 'メイリオ', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    letter-spacing: 0.01em;
+    color: #1d1d1f;
+  }
+
+  .dark body {
+    color: #f5f5f7;
+  }
+}
+
+@layer components {
+  .section-title {
+    @apply text-xl font-semibold mb-6 pb-3 border-b border-border-light dark:border-border-dark;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: #1d1d1f;
+  }
+
+  .dark .section-title {
+    color: #f5f5f7 !important;
+  }
+
+  .link {
+    @apply text-text-light dark:text-text-dark underline underline-offset-4;
+    @apply hover:opacity-70 transition-opacity;
+  }
+}
+
+/* PDF出力用のスタイル */
+@media print {
+  @page {
+    margin: 1.5cm;
+    size: A4;
+  }
+
+  body {
+    background: white !important;
+    color: #1d1d1f !important;
+    font-size: 11pt;
+    line-height: 1.7;
+    font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', '游ゴシック体', 'Yu Gothic', 'YuGothic', 'Meiryo', 'メイリオ', sans-serif !important;
+    letter-spacing: 0.01em;
+  }
+
+  .dark {
+    --color-bg: #ffffff;
+    --color-text: #1d1d1f;
+    --color-border: #000000;
+  }
+
+  /* テーマ切替ボタンを非表示 */
+  #theme-toggle {
+    display: none !important;
+  }
+
+  /* リンクの色を黒に */
+  a {
+    color: black !important;
+    text-decoration: underline;
+  }
+
+  /* ページ区切りを避ける */
+  section {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* 見出しの前で改ページを避ける */
+  h2, h3 {
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  /* 画像の最大幅を制限 */
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* フッターを非表示 */
+  footer {
+    display: none !important;
+  }
+
+  /* 余白を調整 */
+  header {
+    margin-bottom: 1.25rem !important;
+  }
+
+  .section-title {
+    margin-bottom: 1rem !important;
+    padding-bottom: 0.5rem !important;
+    font-size: 1.1rem !important;
+    color: #1d1d1f !important;
+    font-weight: 600 !important;
+  }
+
+  /* セクション間の余白を調整 */
+  section {
+    margin-bottom: 1.25rem !important;
+  }
+
+  /* プロジェクト画像を非表示 */
+  img {
+    display: none !important;
+  }
+}
+

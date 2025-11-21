@@ -1,0 +1,164 @@
+---
+interface Props {
+  items: Array<{ title: string; id: string }>;
+}
+
+const { items } = Astro.props;
+---
+
+<nav class="mb-12 print:mb-8 print:hidden">
+  <button
+    id="toc-toggle"
+    class="w-full flex items-center justify-between p-4 rounded-lg border border-border-light dark:border-border-dark bg-bg-light dark:bg-bg-dark hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
+    aria-expanded="false"
+    aria-controls="toc-content"
+  >
+    <h2 class="text-lg font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] m-0">目次</h2>
+    <svg
+      id="toc-icon"
+      class="w-5 h-5 text-[#1d1d1f] dark:text-[#f5f5f7] transition-transform duration-200"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M19 9l-7 7-7-7"
+      ></path>
+    </svg>
+  </button>
+
+  <div
+    id="toc-content"
+    class="overflow-hidden transition-all duration-300 ease-in-out"
+    style="max-height: 0;"
+  >
+    <ul class="pt-4 pb-2 space-y-2 pl-4 border-l-2 border-border-light dark:border-border-dark ml-2">
+      {items.map((item) => (
+        <li>
+          <a
+            href={`#${item.id}`}
+            class="toc-link block text-base text-[#1d1d1f] dark:text-[#f5f5f7] hover:opacity-70 transition-opacity hover:translate-x-1 transition-transform"
+            data-target={item.id}
+          >
+            {item.title}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</nav>
+
+<script is:inline>
+  (function() {
+    function initTOC() {
+      const toggle = document.getElementById('toc-toggle');
+      const content = document.getElementById('toc-content');
+      const icon = document.getElementById('toc-icon');
+
+      if (!toggle || !content || !icon) {
+        // DOMがまだ読み込まれていない場合は少し待つ
+        setTimeout(initTOC, 100);
+        return;
+      }
+
+      // 初期状態をlocalStorageから読み込む（デフォルトは閉じた状態）
+      const isOpen = localStorage.getItem('toc-open') === 'true';
+
+      function setOpenState(open) {
+        if (open) {
+          content.style.maxHeight = content.scrollHeight + 'px';
+          icon.style.transform = 'rotate(180deg)';
+          toggle.setAttribute('aria-expanded', 'true');
+          localStorage.setItem('toc-open', 'true');
+        } else {
+          content.style.maxHeight = '0';
+          icon.style.transform = 'rotate(0deg)';
+          toggle.setAttribute('aria-expanded', 'false');
+          localStorage.setItem('toc-open', 'false');
+        }
+      }
+
+      // 初期状態を設定
+      setOpenState(isOpen);
+
+      toggle.addEventListener('click', () => {
+        const isCurrentlyOpen = toggle.getAttribute('aria-expanded') === 'true';
+        setOpenState(!isCurrentlyOpen);
+      });
+
+      // リサイズ時にmax-heightを更新
+      let resizeTimer;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          if (toggle.getAttribute('aria-expanded') === 'true') {
+            content.style.maxHeight = content.scrollHeight + 'px';
+          }
+        }, 100);
+      });
+
+      // 目次リンクのクリック処理
+      function handleTOCClick(e) {
+        e.preventDefault();
+        const link = e.currentTarget;
+        const targetId = link.getAttribute('data-target') || link.getAttribute('href')?.replace('#', '');
+
+        if (!targetId) return;
+
+        const targetSection = document.getElementById(targetId);
+        if (!targetSection) {
+          console.warn('Section not found:', targetId);
+          return;
+        }
+
+        // セクションタイトルを取得
+        const sectionTitle = targetSection.querySelector('h2.section-title');
+        if (!sectionTitle) {
+          console.warn('Section title not found in:', targetId);
+          return;
+        }
+
+        // 要素の絶対位置を正確に計算
+        // getBoundingClientRect()はビューポートからの相対位置を返すので、
+        // 現在のスクロール位置を足して絶対位置を取得
+        const rect = sectionTitle.getBoundingClientRect();
+        const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+        const elementTop = rect.top + scrollY;
+
+        // ブックマークバーなどを考慮したオフセット
+        // ビューポートの上部から少し下に配置（20px）
+        const offset = 20;
+        const targetScrollPosition = elementTop - offset;
+
+        // スクロール実行
+        window.scrollTo({
+          top: Math.max(0, targetScrollPosition),
+          behavior: 'smooth'
+        });
+
+        // 目次を閉じる
+        const isCurrentlyOpen = toggle.getAttribute('aria-expanded') === 'true';
+        if (isCurrentlyOpen) {
+          setOpenState(false);
+        }
+      }
+
+      // 目次リンクにイベントリスナーを追加
+      const tocLinks = document.querySelectorAll('.toc-link');
+      tocLinks.forEach(link => {
+        link.addEventListener('click', handleTOCClick);
+      });
+    }
+
+    // DOMが読み込まれたら初期化
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initTOC);
+    } else {
+      initTOC();
+    }
+  })();
+</script>
