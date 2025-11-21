@@ -10,7 +10,6 @@ export default defineConfig({
     mdx(),
   ],
   output: 'static',
-  site: 'https://iakito-dev.github.io',
-  base: '/Resume_JP/',
+  site: 'https://your-site.vercel.app',
 });
 
