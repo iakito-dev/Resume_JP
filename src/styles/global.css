@@ -10,27 +10,59 @@
   }
 
   .dark {
-    --color-bg: #000000;
+    --color-bg: #1f1f1f;
     --color-text: #f5f5f7;
-    --color-border: #424245;
+    --color-border: #4a4a4a;
   }
 
   html {
     @apply antialiased;
+    background-color: var(--color-bg);
+    /* 日本語のレンダリング最適化 */
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
-    @apply bg-bg-light dark:bg-bg-dark text-text-light dark:text-text-dark;
+    background-color: var(--color-bg);
+    color: var(--color-text);
     @apply transition-colors duration-200;
     font-family: -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', '游ゴシック体', 'Yu Gothic', 'YuGothic', 'Meiryo', 'メイリオ', sans-serif;
     font-size: 16px;
-    line-height: 1.7;
-    letter-spacing: 0.01em;
-    color: #1d1d1f;
+    line-height: 1.8;
+    letter-spacing: 0.02em;
+    /* 日本語フォントの特徴設定 */
+    font-feature-settings: 'palt' 1;
+    font-variant-ligatures: common-ligatures;
   }
 
-  .dark body {
-    color: #f5f5f7;
+  /* 日本語の読みやすさ向上 */
+  p {
+    margin-bottom: 1.25em;
+    line-height: 1.9;
+    letter-spacing: 0.02em;
+  }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* リストアイテムの行間調整 */
+  li {
+    line-height: 1.85;
+    letter-spacing: 0.02em;
+  }
+
+  /* 見出しの行間調整 */
+  h2, h3, h4 {
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+  }
+
+  /* セクション内のコンテンツの余白調整 */
+  section > * + * {
+    margin-top: 0.75em;
   }
 }
 
@@ -50,6 +82,48 @@
     @apply text-text-light dark:text-text-dark underline underline-offset-4;
     @apply hover:opacity-70 transition-opacity;
   }
+
+  /* 日本語コンテンツの読みやすさ向上 */
+  .prose {
+    /* 日本語フォントの特徴設定 */
+    font-feature-settings: 'palt' 1;
+    font-variant-ligatures: common-ligatures;
+  }
+
+  .prose p {
+    margin-bottom: 1.25em;
+    line-height: 1.9;
+    letter-spacing: 0.02em;
+  }
+
+  .prose p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* リストの行間調整 */
+  .prose ul,
+  .prose ol {
+    margin-bottom: 1em;
+  }
+
+  .prose li {
+    margin-bottom: 0.5em;
+    line-height: 1.85;
+    letter-spacing: 0.02em;
+  }
+
+  .prose li:last-child {
+    margin-bottom: 0;
+  }
+
+  /* 見出しの日本語最適化 */
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4 {
+    font-feature-settings: 'palt' 1;
+    letter-spacing: -0.01em;
+  }
 }
 
 /* PDF出力用のスタイル */
@@ -63,9 +137,31 @@
     background: white !important;
     color: #1d1d1f !important;
     font-size: 11pt;
-    line-height: 1.7;
+    line-height: 1.8;
     font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', '游ゴシック体', 'Yu Gothic', 'YuGothic', 'Meiryo', 'メイリオ', sans-serif !important;
-    letter-spacing: 0.01em;
+    letter-spacing: 0.02em;
+  }
+
+  /* 印刷時の段落スタイル */
+  p {
+    margin-bottom: 1em !important;
+    line-height: 1.85 !important;
+    letter-spacing: 0.02em !important;
+  }
+
+  p:last-child {
+    margin-bottom: 0 !important;
+  }
+
+  /* 印刷時のリストスタイル */
+  li {
+    line-height: 1.8 !important;
+    margin-bottom: 0.4em !important;
+    letter-spacing: 0.02em !important;
+  }
+
+  li:last-child {
+    margin-bottom: 0 !important;
   }
 
   .dark {

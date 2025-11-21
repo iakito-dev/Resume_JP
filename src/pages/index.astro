@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
 import Section from '../components/Section.astro';
 
 // MDXコンテンツをインポート
@@ -35,7 +34,7 @@ const profile = {
 ---
 
 <BaseLayout
-  title={`${profile.name} - ${profile.title}`}
+  title="職務経歴書 - Akito Ito"
   description="Software Engineer / ex-Cloud Support Engineer (Database Profile) - Professional resume and portfolio"
 >
   <Header
@@ -76,7 +75,5 @@ const profile = {
   <Section title="言語スキル" id="languages">
     <LanguagesContent />
   </Section>
-
-  <Footer />
 </BaseLayout>
 
