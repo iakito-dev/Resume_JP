@@ -14,8 +14,9 @@ const {
   ogImage = '/og-image.png',
 } = Astro.props;
 
+const base = import.meta.env.BASE_URL;
 const siteUrl = Astro.site || 'https://your-site.vercel.app';
-const fullOgImage = new URL(ogImage, siteUrl).href;
+const fullOgImage = new URL(ogImage, siteUrl + base).href;
 ---
 
 <!doctype html>
@@ -40,7 +41,7 @@ const fullOgImage = new URL(ogImage, siteUrl).href;
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={fullOgImage} />
 
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href={`${base}favicon.ico`} />
     <title>{title}</title>
 
     <!-- PDF出力用のスタイル -->
