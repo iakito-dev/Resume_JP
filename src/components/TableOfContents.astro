@@ -115,30 +115,36 @@ const { items } = Astro.props;
           return;
         }
 
-        // セクションタイトルを取得
+        // セクションタイトル（h2）の位置を基準にする
         const sectionTitle = targetSection.querySelector('h2.section-title');
         if (!sectionTitle) {
-          console.warn('Section title not found in:', targetId);
-          return;
+          // セクションタイトルがない場合はセクション要素自体を使用
+          const rect = targetSection.getBoundingClientRect();
+          const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+          const elementTop = rect.top + scrollY;
+          const offset = 290; // より大きなオフセット
+          const targetScrollPosition = elementTop - offset;
+
+          window.scrollTo({
+            top: Math.max(0, targetScrollPosition),
+            behavior: 'smooth'
+          });
+        } else {
+          // セクションタイトルの位置を取得
+          const rect = sectionTitle.getBoundingClientRect();
+          const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
+          const elementTop = rect.top + scrollY;
+
+          // ビューポート上部から適切な位置に配置（オフセットを大きくする）
+          const offset = 290; // セクションタイトルが適切に見える位置に
+          const targetScrollPosition = elementTop - offset;
+
+          // スクロール実行
+          window.scrollTo({
+            top: Math.max(0, targetScrollPosition),
+            behavior: 'smooth'
+          });
         }
-
-        // 要素の絶対位置を正確に計算
-        // getBoundingClientRect()はビューポートからの相対位置を返すので、
-        // 現在のスクロール位置を足して絶対位置を取得
-        const rect = sectionTitle.getBoundingClientRect();
-        const scrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop;
-        const elementTop = rect.top + scrollY;
-
-        // ブックマークバーなどを考慮したオフセット
-        // ビューポートの上部から少し下に配置（20px）
-        const offset = 20;
-        const targetScrollPosition = elementTop - offset;
-
-        // スクロール実行
-        window.scrollTo({
-          top: Math.max(0, targetScrollPosition),
-          behavior: 'smooth'
-        });
 
         // 目次を閉じる
         const isCurrentlyOpen = toggle.getAttribute('aria-expanded') === 'true';

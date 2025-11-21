@@ -2,6 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Section from '../components/Section.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+import Footer from '../components/Footer.astro';
 
 // MDXコンテンツをインポート
 import SummaryContent from '../content/resume/summary.mdx';
@@ -31,18 +33,54 @@ const profile = {
   },
 };
 
+// 目次項目
+const tocItems = [
+  { title: 'プロフィール', id: 'profile' },
+  { title: '個人プロジェクト', id: 'projects' },
+  { title: '職務経歴', id: 'experience' },
+  { title: '学歴', id: 'education' },
+  { title: '資格', id: 'certifications' },
+  { title: 'スキルサマリー', id: 'skills' },
+  { title: '強み・特性', id: 'strengths' },
+  { title: '言語スキル', id: 'languages' },
+];
+
 ---
 
 <BaseLayout
   title="職務経歴書 - Akito Ito"
   description="Software Engineer / ex-Cloud Support Engineer (Database Profile) - Professional resume and portfolio"
 >
+  {/* 構造化データ（JSON-LD） */}
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "伊藤 彬人",
+    "alternateName": "AKITO ITO",
+    "jobTitle": "Software Engineer",
+    "email": profile.contact.email,
+    "telephone": profile.contact.tel,
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": profile.contact.location,
+      "addressCountry": "JP"
+    },
+    "sameAs": [
+      profile.socialLinks.github,
+      profile.socialLinks.linkedin,
+      profile.socialLinks.zenn
+    ].filter(Boolean),
+    "url": Astro.site || "https://your-site.vercel.app"
+  })} />
+
   <Header
     name={profile.name}
     title={profile.title}
     contact={profile.contact}
     socialLinks={profile.socialLinks}
   />
+
+  <TableOfContents items={tocItems} />
 
   <Section title="プロフィール" id="profile">
     <SummaryContent />
@@ -75,5 +113,7 @@ const profile = {
   <Section title="言語スキル" id="languages">
     <LanguagesContent />
   </Section>
+
+  <Footer />
 </BaseLayout>
 
