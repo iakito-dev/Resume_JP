@@ -1,0 +1,129 @@
+---
+---
+
+<button
+  id="language-toggle"
+  class="fixed top-4 right-20 p-3 rounded-full bg-bg-light dark:bg-bg-dark border border-border-light dark:border-border-dark shadow-lg z-50"
+  aria-label="Toggle language"
+>
+  <span id="lang-text" class="text-sm font-medium text-text-light dark:text-text-dark">EN</span>
+</button>
+
+<script is:inline>
+  const languageToggle = document.getElementById('language-toggle');
+  const langText = document.getElementById('lang-text');
+
+  // 現在の言語を取得（デフォルトは日本語）
+  const currentLang = localStorage.getItem('language') || 'ja';
+
+  // 初期状態を設定
+  if (currentLang === 'en') {
+    langText.textContent = 'JA';
+    document.documentElement.setAttribute('data-lang', 'en');
+  } else {
+    langText.textContent = 'EN';
+    document.documentElement.setAttribute('data-lang', 'ja');
+  }
+
+  // 言語切り替え関数
+  function toggleLanguage() {
+    const currentLang = document.documentElement.getAttribute('data-lang') || 'ja';
+    const newLang = currentLang === 'ja' ? 'en' : 'ja';
+
+    document.documentElement.setAttribute('data-lang', newLang);
+    localStorage.setItem('language', newLang);
+
+    // ボタンのテキストを更新
+    langText.textContent = newLang === 'ja' ? 'EN' : 'JA';
+
+    // コンテンツを切り替え
+    updateContent(newLang);
+
+    // カスタムイベントを発火
+    document.dispatchEvent(new CustomEvent('languageChanged', { detail: { lang: newLang } }));
+  }
+
+  // コンテンツを更新する関数
+  function updateContent(lang) {
+    // すべてのセクションコンテンツを取得
+    const sections = document.querySelectorAll('section[id]');
+
+    sections.forEach(section => {
+      const sectionId = section.id;
+      const jaContent = section.querySelector('.content-ja');
+      const enContent = section.querySelector('.content-en');
+
+      if (lang === 'en') {
+        if (jaContent) jaContent.style.display = 'none';
+        if (enContent) enContent.style.display = 'block';
+      } else {
+        if (jaContent) jaContent.style.display = 'block';
+        if (enContent) enContent.style.display = 'none';
+      }
+    });
+
+    // 目次とセクションタイトルを更新
+    updateTOC(lang);
+  }
+
+  // 目次とセクションタイトルのタイトルを更新
+  function updateTOC(lang) {
+    const tocTitles = {
+      ja: {
+        profile: 'プロフィール',
+        projects: '個人プロジェクト',
+        experience: '職務経歴',
+        education: '学歴',
+        certifications: '資格',
+        skills: 'スキルサマリー',
+        strengths: '強み・特性',
+        languages: '言語スキル'
+      },
+      en: {
+        profile: 'Profile',
+        projects: 'Personal Projects',
+        experience: 'Work Experience',
+        education: 'Education',
+        certifications: 'Certifications',
+        skills: 'Skills Summary',
+        strengths: 'Strengths & Characteristics',
+        languages: 'Language Skills'
+      }
+    };
+
+    // 目次リンクを更新
+    const tocLinks = document.querySelectorAll('.toc-link');
+    tocLinks.forEach(link => {
+      const targetId = link.getAttribute('data-target');
+      if (targetId && tocTitles[lang] && tocTitles[lang][targetId]) {
+        link.textContent = tocTitles[lang][targetId];
+      }
+    });
+
+    // セクションタイトルも更新
+    const sectionTitleElements = document.querySelectorAll('.section-title');
+    sectionTitleElements.forEach(title => {
+      const section = title.closest('section');
+      if (section && section.id) {
+        const sectionId = section.id;
+        if (tocTitles[lang] && tocTitles[lang][sectionId]) {
+          title.textContent = tocTitles[lang][sectionId];
+        }
+      }
+    });
+  }
+
+  languageToggle.addEventListener('click', toggleLanguage);
+
+  // ページ読み込み時にコンテンツを更新
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      const lang = localStorage.getItem('language') || 'ja';
+      updateContent(lang);
+    });
+  } else {
+    const lang = localStorage.getItem('language') || 'ja';
+    updateContent(lang);
+  }
+</script>
+

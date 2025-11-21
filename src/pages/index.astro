@@ -3,9 +3,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Section from '../components/Section.astro';
 import TableOfContents from '../components/TableOfContents.astro';
-import Footer from '../components/Footer.astro';
+import LanguageToggle from '../components/LanguageToggle.astro';
 
-// MDXコンテンツをインポート
+// MDXコンテンツをインポート（日本語）
 import SummaryContent from '../content/resume/summary.mdx';
 import ProjectsContent from '../content/resume/projects.mdx';
 import ExperienceContent from '../content/resume/experience.mdx';
@@ -15,13 +15,30 @@ import SkillsContent from '../content/resume/skills.mdx';
 import StrengthsContent from '../content/resume/strengths.mdx';
 import LanguagesContent from '../content/resume/links.mdx';
 
+// MDXコンテンツをインポート（英語）
+import SummaryContentEN from '../content/resume/en/summary.mdx';
+import ProjectsContentEN from '../content/resume/en/projects.mdx';
+import ExperienceContentEN from '../content/resume/en/experience.mdx';
+import EducationContentEN from '../content/resume/en/education.mdx';
+import CertificationsContentEN from '../content/resume/en/certifications.mdx';
+import SkillsContentEN from '../content/resume/en/skills.mdx';
+import StrengthsContentEN from '../content/resume/en/strengths.mdx';
+import LanguagesContentEN from '../content/resume/en/links.mdx';
+
 // プロフィール情報
 const profile = {
-  name: '伊藤 彬人 | AKITO ITO',
-  title: 'Software Engineer / ex-Cloud Support Engineer (Database Profile)',
+  ja: {
+    name: '伊藤 彬人 | AKITO ITO',
+    title: 'Software Engineer / ex-Cloud Support Engineer (Database Profile)',
+    location: '東京都',
+  },
+  en: {
+    name: 'AKITO ITO | 伊藤 彬人',
+    title: 'Software Engineer / ex-Cloud Support Engineer (Database Profile)',
+    location: 'Tokyo, Japan',
+  },
   contact: {
     email: 'sekai.110.0604@gmail.com',
-    location: '東京都',
     tel: '080-6635-0663',
   },
   socialLinks: {
@@ -33,17 +50,53 @@ const profile = {
   },
 };
 
-// 目次項目
-const tocItems = [
-  { title: 'プロフィール', id: 'profile' },
-  { title: '個人プロジェクト', id: 'projects' },
-  { title: '職務経歴', id: 'experience' },
-  { title: '学歴', id: 'education' },
-  { title: '資格', id: 'certifications' },
-  { title: 'スキルサマリー', id: 'skills' },
-  { title: '強み・特性', id: 'strengths' },
-  { title: '言語スキル', id: 'languages' },
-];
+// 目次項目（上から「プロフィール → 職務経歴 → 個人プロジェクト → スキル → 強み → 学歴 → 資格 → 言語」の流れ）
+const tocItems = {
+  ja: [
+    { title: 'プロフィール', id: 'profile' },
+    { title: '職務経歴', id: 'experience' },
+    { title: '個人プロジェクト', id: 'projects' },
+    { title: 'スキルサマリー', id: 'skills' },
+    { title: '強み・特性', id: 'strengths' },
+    { title: '学歴', id: 'education' },
+    { title: '資格', id: 'certifications' },
+    { title: '言語スキル', id: 'languages' },
+  ],
+  en: [
+    { title: 'Profile', id: 'profile' },
+    { title: 'Work Experience', id: 'experience' },
+    { title: 'Personal Projects', id: 'projects' },
+    { title: 'Skills Summary', id: 'skills' },
+    { title: 'Strengths & Characteristics', id: 'strengths' },
+    { title: 'Education', id: 'education' },
+    { title: 'Certifications', id: 'certifications' },
+    { title: 'Language Skills', id: 'languages' },
+  ],
+};
+
+// セクションタイトル（id ごとの表示テキスト）
+const sectionTitles = {
+  ja: {
+    profile: 'プロフィール',
+    strengths: '強み・特性',
+    skills: 'スキルサマリー',
+    experience: '職務経歴',
+    projects: '個人プロジェクト',
+    education: '学歴',
+    certifications: '資格',
+    languages: '言語スキル',
+  },
+  en: {
+    profile: 'Profile',
+    strengths: 'Strengths & Characteristics',
+    skills: 'Skills Summary',
+    experience: 'Work Experience',
+    projects: 'Personal Projects',
+    education: 'Education',
+    certifications: 'Certifications',
+    languages: 'Language Skills',
+  },
+};
 
 ---
 
@@ -51,6 +104,8 @@ const tocItems = [
   title="職務経歴書 - Akito Ito"
   description="Software Engineer / ex-Cloud Support Engineer (Database Profile) - Professional resume and portfolio"
 >
+  <LanguageToggle />
+
   {/* 構造化データ（JSON-LD） */}
   <script type="application/ld+json" set:html={JSON.stringify({
     "@context": "https://schema.org",
@@ -62,7 +117,7 @@ const tocItems = [
     "telephone": profile.contact.tel,
     "address": {
       "@type": "PostalAddress",
-      "addressLocality": profile.contact.location,
+      "addressLocality": profile.ja.location,
       "addressCountry": "JP"
     },
     "sameAs": [
@@ -74,46 +129,170 @@ const tocItems = [
   })} />
 
   <Header
-    name={profile.name}
-    title={profile.title}
-    contact={profile.contact}
+    name={profile.ja.name}
+    title={profile.ja.title}
+    contact={{
+      ...profile.contact,
+      location: profile.ja.location,
+    }}
     socialLinks={profile.socialLinks}
   />
 
-  <TableOfContents items={tocItems} />
+  <TableOfContents items={tocItems.ja} />
 
   <Section title="プロフィール" id="profile">
-    <SummaryContent />
-  </Section>
-
-  <Section title="個人プロジェクト" id="projects">
-    <ProjectsContent />
+    <div class="content-ja">
+      <SummaryContent />
+    </div>
+    <div class="content-en" style="display: none;">
+      <SummaryContentEN />
+    </div>
   </Section>
 
   <Section title="職務経歴" id="experience">
-    <ExperienceContent />
+    <div class="content-ja">
+      <ExperienceContent />
+    </div>
+    <div class="content-en" style="display: none;">
+      <ExperienceContentEN />
+    </div>
   </Section>
 
-  <Section title="学歴" id="education">
-    <EducationContent />
-  </Section>
-
-  <Section title="資格" id="certifications">
-    <CertificationsContent />
+  <Section title="個人プロジェクト" id="projects">
+    <div class="content-ja">
+      <ProjectsContent />
+    </div>
+    <div class="content-en" style="display: none;">
+      <ProjectsContentEN />
+    </div>
   </Section>
 
   <Section title="スキルサマリー" id="skills">
-    <SkillsContent />
+    <div class="content-ja">
+      <SkillsContent />
+    </div>
+    <div class="content-en" style="display: none;">
+      <SkillsContentEN />
+    </div>
   </Section>
 
   <Section title="強み・特性" id="strengths">
-    <StrengthsContent />
+    <div class="content-ja">
+      <StrengthsContent />
+    </div>
+    <div class="content-en" style="display: none;">
+      <StrengthsContentEN />
+    </div>
+  </Section>
+
+  <Section title="学歴" id="education">
+    <div class="content-ja">
+      <EducationContent />
+    </div>
+    <div class="content-en" style="display: none;">
+      <EducationContentEN />
+    </div>
+  </Section>
+
+  <Section title="資格" id="certifications">
+    <div class="content-ja">
+      <CertificationsContent />
+    </div>
+    <div class="content-en" style="display: none;">
+      <CertificationsContentEN />
+    </div>
   </Section>
 
   <Section title="言語スキル" id="languages">
-    <LanguagesContent />
+    <div class="content-ja">
+      <LanguagesContent />
+    </div>
+    <div class="content-en" style="display: none;">
+      <LanguagesContentEN />
+    </div>
   </Section>
-
-  <Footer />
 </BaseLayout>
+
+<script is:inline>
+  // プロフィール情報とセクションタイトルの多言語対応
+  const sectionTitles = {
+    ja: {
+      profile: 'プロフィール',
+      projects: '個人プロジェクト',
+      experience: '職務経歴',
+      education: '学歴',
+      certifications: '資格',
+      skills: 'スキルサマリー',
+      strengths: '強み・特性',
+      languages: '言語スキル',
+    },
+    en: {
+      profile: 'Profile',
+      projects: 'Personal Projects',
+      experience: 'Work Experience',
+      education: 'Education',
+      certifications: 'Certifications',
+      skills: 'Skills Summary',
+      strengths: 'Strengths & Characteristics',
+      languages: 'Language Skills',
+    },
+  };
+
+  const profileData = {
+    ja: {
+      name: '伊藤 彬人 | AKITO ITO',
+      title: 'Software Engineer / ex-Cloud Support Engineer (Database Profile)',
+      location: '東京都',
+    },
+    en: {
+      name: 'AKITO ITO | 伊藤 彬人',
+      title: 'Software Engineer / ex-Cloud Support Engineer (Database Profile)',
+      location: 'Tokyo, Japan',
+    },
+  };
+
+  function updateProfile(lang) {
+    const nameJaElement = document.getElementById('header-name-ja');
+    const nameEnElement = document.getElementById('header-name-en');
+    const titleElement = document.getElementById('header-title');
+    const locationElement = document.getElementById('header-location');
+
+    if (profileData[lang]) {
+      const nameParts = profileData[lang].name.split(' | ');
+
+      if (nameJaElement) {
+        nameJaElement.textContent = nameParts[0];
+      }
+
+      if (nameEnElement && nameParts[1]) {
+        nameEnElement.textContent = nameParts[1];
+      }
+
+      if (titleElement) {
+        titleElement.textContent = profileData[lang].title;
+      }
+
+      if (locationElement) {
+        locationElement.textContent = profileData[lang].location;
+      }
+    }
+  }
+
+  // 言語変更イベントをリッスン
+  document.addEventListener('languageChanged', (e) => {
+    const lang = e.detail.lang;
+    updateProfile(lang);
+  });
+
+  // 初期化時にプロフィールを更新
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      const lang = localStorage.getItem('language') || 'ja';
+      updateProfile(lang);
+    });
+  } else {
+    const lang = localStorage.getItem('language') || 'ja';
+    updateProfile(lang);
+  }
+</script>
 
