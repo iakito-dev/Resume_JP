@@ -11,6 +11,5 @@ export default defineConfig({
   ],
   output: 'static',
   site: 'https://iakito-dev.github.io',
-  base: '/Resume_JP/',
 });
 
