@@ -25,3 +25,5 @@ pnpm-debug.log*
 # generated files
 public/og-image.png
 
+# Vite
+.vite/

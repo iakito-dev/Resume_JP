@@ -11,6 +11,6 @@ export default defineConfig({
   ],
   output: 'static',
   site: 'https://iakito-dev.github.io',
-  base: '/Resume_JP/',
+  base: process.env.NODE_ENV === 'production' ? '/Resume_JP/' : '/',
 });
 
